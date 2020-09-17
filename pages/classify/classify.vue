@@ -42,7 +42,7 @@
 			}
 		},
 		onLoad(data) {
-			console.log(data)
+			// console.log(data)
 			this.classify = data.classify
 		},
 		methods: {
