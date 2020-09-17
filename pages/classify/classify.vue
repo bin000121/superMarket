@@ -47,10 +47,7 @@
 		},
 		methods: {
 			toggle(index) {
-				let dom = document.querySelectorAll('.good .title')
-				dom[this.currentIndex].classList.add('static')
 				this.currentIndex = index
-				dom[index].classList.add('sticky')
 				let titleDistant = 30
 				let gapDistant = (this.goodsList[index].children.length - 1) * 7.5
 				let childrenDistant = this.goodsList[index].children.length * 75
