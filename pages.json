@@ -35,7 +35,9 @@
 		{
 			"path": "pages/search/search",
 			"style": {
-				"navigationBarTitleText": "搜索"
+				"navigationBarTitleText": "搜索",
+				"navigationBarTextStyle":"black",
+				"navigationBarBackgroundColor": "#fff"
 			}
 		}
 	    ,{

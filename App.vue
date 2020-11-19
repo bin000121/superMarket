@@ -32,6 +32,7 @@
 	html,
 	body {
 		-webkit-overflow-scrolling: touch!important;
+		overflow-scrolling: touch;
 	}
 	/* 使得ios滑动流畅 */
 </style>

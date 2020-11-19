@@ -1,13 +1,12 @@
 <template>
 	<view class="content">
 		<view class="classify">
-			<view class="mask"></view>
 			<!-- left -->
 			<view class="left">
 				<scroll-view scroll-y class="scrollLeft" :scroll-top="leftScrollTop">
 					<view :class="['scrollYItem', index==currentIndex?'scrollYItemActive':'']" v-for="(item, index) in goodsList" :key="item.title" @click="toggle(index)">
 						<text style="letter-spacing: 1px;font-weight: 500;">
-							{{'酒水饮料' + (index + 1)}}
+							{{item.title}}
 						</text>
 						<!-- <view :class="['indexBlock', item===currentIndex?'indexBlockAcitve': '']"></view> -->
 					</view>
@@ -15,7 +14,7 @@
 			</view>
 			<!-- right -->
 			<view class="right">
-				<scroll-view scroll-y class="scrollRight" @scroll="rightScroll" :scroll-top="rigthtScrollTop" @scrolltolower="scrollToBottom" scroll-with-animation>
+				<scroll-view scroll-y class="scrollRight" @scroll="rightScroll" :scroll-top="rigthtScrollTop" scroll-with-animation>
 					<view class="good" v-for="item in goodsList" :key="item.title">
 						<view class="title">{{item.title}}</view>
 						<view class="good_body" v-for="item2 in item.children" :key="item2.title">
@@ -42,11 +41,12 @@
 			}
 		},
 		onLoad(data) {
-			// console.log(data)
-			this.classify = data.classify
+			this.classifyIndex = data.index
+			this.toggle(data.index)
 		},
 		methods: {
 			toggle(index) {
+				if (!this.goodsList[index]) return false
 				this.currentIndex = index
 				let titleDistant = 30
 				let gapDistant = (this.goodsList[index].children.length - 1) * 7.5
@@ -54,31 +54,29 @@
 				this.rigthtScrollTop = index * (titleDistant + gapDistant + childrenDistant)
 			},
 			createList () {
-				for (let i=0; i < 15; i++){
+				let classifyList = uni.getStorageSync('iconList')
+				classifyList.forEach((value, i) => {
 					let obj = {
-						title: '酒水饮料-' + (i + 1),
+						title: value.text,
 						children: []
 					}
 					for (let j=0; j < 3; j++){
 						obj.children.push({
-							title: `农夫山泉${i}-${j}`,
-							price: 3.5,
-							remark: '纯净甘甜'
+							title: `${value.text}-${i}-${j}`,
+							price: '￥' + 3.5
 						})
 					}
 					this.goodsList.push(obj)
-				}
+				})
 			},
 			rightScroll (e) {
 				let rigthtScrollTop = e.detail.scrollTop
-				this.currentIndex = Math.ceil(rigthtScrollTop / 270)
-			},
-			scrollToBottom () {
-				this.currentIndex = this.arr
+				this.currentIndex = Math.floor(rigthtScrollTop / 270)
 			}
 		},
 		created () {
 			this.createList()
+			this.toggle(this.classifyIndex)
 		}
 	}
 </script>
@@ -94,24 +92,15 @@
 		height: 100%;
 		position: relative;
 	}
-
-	.mask {
-		width: calc(100% / 10 * 2);
-		height: 100%;
-		position: fixed;
-		left: 0;
-		top: 0;
-		background-color: #eee;
-	}
 	.left{
 		flex: 2;
-		background-color: #fff;
+		height: 100%;
+		background-color: #eee;
 	}
 	.scrollLeft {
 		height: 100%;
-		font-size: 25rpx;
+		font-size: 28rpx;
 		box-sizing: border-box;
-		-webkit-overflow-scrolling: touch!important;
 	}
 	.scrollLeft view:last-child{
 		margin-bottom: 30rpx;
@@ -163,8 +152,6 @@
 		text-align: left;
 		height: 60rpx;
 		line-height: 60rpx;
-		position: sticky;
-		top: 0;
 	}
 	.static{
 		position: static;

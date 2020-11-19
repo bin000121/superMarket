@@ -27,13 +27,13 @@
 			<view>
 				<text style="color: red;font-size: 66rpx;font-weight: 500;">
 					<text style="font-size: 40rpx;">￥</text>
-					33.8
+					{{goodOne.new_price}}
 				</text>
-				<text style="margin-left: 20rpx;text-decoration: line-through;color: #ccc;font-size: 30rpx;">￥42.5</text>
+				<text style="margin-left: 20rpx;text-decoration: line-through;color: #ccc;font-size: 30rpx;">￥{{goodOne.old_price}}</text>
 			</view>
 			<view class="goodTitle">
-				<text style="font-size: 32rpx;">
-					哈根达斯美味巧克力冰淇淋128g/支
+				<text style="font-size: 34rpx;">
+					{{goodOne.title}}
 				</text>
 			</view>
 		</view>
@@ -141,6 +141,8 @@
 				goodNum: 1,
 				showToTop: false,
 				showPopup: false,
+				goodId: '',
+				goodOne: {},
 				buttonGroup: [{
 					text: '加入购物车',
 					backgroundColor: '#0DAB2B',
@@ -154,8 +156,14 @@
 				}]
 			}
 		},
-		onPageScroll(e) {
+		onPageScroll (e) {
 			this.showToTop = e.scrollTop > 450
+		},
+		onLoad (data) {
+			this.goodId = data.goodId
+		},
+		created() {
+			this.getGood()
 		},
 		methods: {
 			gotoTop () {
@@ -198,6 +206,14 @@
 						title: '收藏成功'
 					})
 					this.options[0].icon = 'heart-filled'
+				}
+			},
+			async getGood () {
+				let res = await this.$api.get('/good/info', {
+					id: this.goodId
+				})
+				if (res.data.code ===  0) {
+					this.goodOne = res.data.goodOne
 				}
 			}
 		},

@@ -1,5 +1,5 @@
 <template>
-	<view class="shopCar">
+	<view class="shopCar" v-if="token && !empty">
 		<view class="goodListBox">
 			<view class="allGood">
 				共 {{arr.length}} 件商品
@@ -42,7 +42,7 @@
 			<view class="choseAll">
 				<label>
 					<checkbox value="checked" :checked="checkedAll" @click="checkAll" />
-					<text>全选</text>
+					<text>全选 ({{arr.length}})</text>
 				</label>
 			</view>
 			<view class="textAndBtn">
@@ -58,6 +58,17 @@
 		<uni-popup ref="clearCarDialog" type="dialog">
 			<uni-popup-dialog type="input" :duration="350" content="确定要清空购物车吗？" @close="$refs.clearCarDialog.close()" @confirm="clearCarConfirm"></uni-popup-dialog>
 		</uni-popup>
+	</view>
+	<view v-else-if="!token" class="noLogin">
+		<view>
+			请先进行登录！
+		</view>
+	</view>
+	<view v-else-if="empty && token" class="empty">
+		<view style="text-align: center;">
+			<view style="margin-bottom: 20rpx;">购物车空空如也鸭~~</view>
+			<u-button type="success" plain size="medium" @click="gotoIndex">购物去~</u-button>
+		</view>
 	</view>
 </template>
 
@@ -134,6 +145,11 @@
 			}
 		},
 		methods: {
+			gotoIndex () {
+				uni.switchTab({
+					url: '../index/index'
+				})
+			},
 			checkedChange(item) {
 				item.check = !item.check
 			},
@@ -214,16 +230,33 @@
 			},
 		},
 		computed: {
-			allPrice() {
+			allPrice () {
 				return this.arr.filter(value => value.check).reduce((prev, curr) => {
 					return Number(Number(curr.price) * curr.count + Number(prev)).toFixed(2)
 				}, 0)
-			}
+			},
+			token () {
+				return true
+				// return Boolean(uni.getStorageSync('token'))
+			},
+			empty () {
+				return false
+			},
 		}
 	}
 </script>
 
 <style scoped>
+	.noLogin, .empty{
+		/* #ifdef APP-PLUS */
+		height: calc(100vh - 88rpx -  100rpx);
+		/* #endif */
+		height: 100vh;
+		display: flex;
+		justify-content: center;
+		align-items: center;
+		font-size: 42rpx;
+	}
 	.shopCar {
 		height: 100%;
 		overflow: hidden;
