@@ -29,7 +29,7 @@
 		<view style="padding: 20rpx;display: flex; flex-wrap: wrap;border-bottom: 18rpx solid #eee;">
 			<view v-for="(item, i) in iconList" :key="i" style="width: 142rpx;color: #444;text-align: center;margin-bottom: 15rpx;"
 			 @click="gotoClassify(i)">
-				<view :class="`iconfont ${item.icon}`" style="font-size: 60rpx;"></view>
+				<view :class="`iconfont ${item.icon}`" style="font-size: 60rpx;" />
 				<text style="font-size: 25rpx;">{{item.text}}</text>
 			</view>
 		</view>
@@ -171,9 +171,9 @@
 					url: '../search/search'
 				})
 			},
-			gotoClassify(data) {
+			gotoClassify(index) {
 				uni.navigateTo({
-					url: '../classify/classify?index=' + data
+					url: '../classify/classify?index=' + index
 				})
 			},
 			gotoGoodDetail() {
@@ -280,7 +280,6 @@
 		text-overflow: -o-ellipsis-lastline;
 		overflow: hidden;
 		margin-top: 10rpx;
-		height: 64rpx;
 		display: -webkit-box;
 		-webkit-box-orient: vertical;
 		-webkit-line-clamp: 2;

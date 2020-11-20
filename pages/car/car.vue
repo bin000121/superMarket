@@ -24,11 +24,21 @@
 								<text class="now_price">￥{{item.price}}</text>
 							</view>
 							<view class="numberBoxAndClose">
-								<view class="goodCount" v-if="!(showNumberBox === index)" @click="showGoodCount(index)">×{{item.count}}</view>
-								<u-number-box class="numberBox" :min="1" :max="20" :size="24" :input-width="70" :input-height="45" v-if="showNumberBox === index"
-								 v-model="currentNumBox" @change="numberBoxChange">
+								<view class="goodCount" v-if="!(showNumberBox === index)" @click="showGoodCount(index)">x{{item.count}}</view>
+								<u-number-box
+									v-if="showNumberBox === index"
+									class="numberBox"
+									:min="1"
+									:max="20"
+									:size="24"
+									:input-width="70"
+									:input-height="45"
+									v-model="currentNumBox"
+									@change="numberBoxChange"
+									:press-time="150"
+									>
 								</u-number-box>
-								<view v-if="showNumberBox === index" class="closeNumBox" @click="closeNumBox(item)">×</view>
+								<view v-if="showNumberBox === index" class="closeNumBox" @click="closeNumBox(item)">x</view>
 							</view>
 						</view>
 					</view>
@@ -76,13 +86,11 @@
 	import uniSwipeActionItem from '../../components/uni-swipe-action-item/uni-swipe-action-item.vue'
 	import uniSwipeAction from '../../components/uni-swipe-action/uni-swipe-action.vue'
 	import uniPopupDialog from '../../components/uni-popup/uni-popup-dialog.vue'
-	import uniNumberBox from '@/components/uni-number-box/uni-number-box.vue'
 	export default {
 		components: {
 			uniSwipeActionItem,
 			uniSwipeAction,
-			uniPopupDialog,
-			uniNumberBox
+			uniPopupDialog
 		},
 		data() {
 			return {
@@ -221,6 +229,7 @@
 				this.disabledSwipe = true
 			},
 			numberBoxChange(e) {
+				lconsole.log(e)
 				this.currentNumBox = e.value
 			},
 			closeNumBox(item) {

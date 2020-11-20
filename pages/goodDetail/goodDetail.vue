@@ -119,6 +119,7 @@
 							:min="1"
 							:max="20"
 							v-model="goodNum"
+							@change="numberBoxChange"
 							>
 						</u-number-box>
 					</view>
@@ -134,7 +135,6 @@
 <script>
 	import tool from '../../api/api.js'
 	import uniGoodsNav from '../../components/uni-goods-nav/uni-goods-nav.vue'
-	import uniNumberBox from '@/components/uni-number-box/uni-number-box.vue'
 	export default {
 		data() {
 			return {
@@ -191,9 +191,6 @@
 				})
 				this.$refs.popup.close()
 			},
-			numCountChange(e) {
-				console.log(e);
-			},
 			likeGoods () {
 				if (this.options[0].icon === 'heart-filled') {
 					uni.showToast({
@@ -217,11 +214,13 @@
 				if (res.data.code ===  0) {
 					this.goodOne = res.data.goodOne
 				}
+			},
+			numberBoxChange (e) {
+				this.goodNum = e.value
 			}
 		},
 		components: {
-			uniGoodsNav,
-			uniNumberBox
+			uniGoodsNav
 		}
 	}
 </script>

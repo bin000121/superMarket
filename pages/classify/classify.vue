@@ -3,8 +3,15 @@
 		<view class="classify">
 			<!-- left -->
 			<view class="left">
-				<scroll-view scroll-y class="scrollLeft" :scroll-top="leftScrollTop">
-					<view :class="['scrollYItem', index==currentIndex?'scrollYItemActive':'']" v-for="(item, index) in goodsList" :key="item.title" @click="toggle(index)">
+				<scroll-view
+					scroll-y
+					class="scrollLeft"
+				>
+					<view
+						:class="{'scrollYItem': true, 'scrollYItemActive': index === currentIndex }"
+						v-for="(item, index) in goodsList"
+						:key="item.title" 
+						@click="toggle(index)">
 						<text style="letter-spacing: 1px;font-weight: 500;">
 							{{item.title}}
 						</text>
@@ -14,10 +21,22 @@
 			</view>
 			<!-- right -->
 			<view class="right">
-				<scroll-view scroll-y class="scrollRight" @scroll="rightScroll" :scroll-top="rigthtScrollTop" scroll-with-animation>
-					<view class="good" v-for="item in goodsList" :key="item.title">
-						<view class="title">{{item.title}}</view>
-						<view class="good_body" v-for="item2 in item.children" :key="item2.title">
+				<scroll-view
+					scroll-y
+					class="scrollRight"
+					:scroll-into-view="subTitle"
+					@scroll="rightScroll"
+					scroll-with-animation
+				>
+					<view class="good" v-for="(item, index) in goodsList" :key="item.title">
+						<view
+							class="title"
+							:id="`subTitle-${index}`"
+						>{{item.title}}</view>
+						<view
+							class="good_body"
+							v-for="item2 in item.children"
+							:key="item2.title">
 							<view class="title2">{{item2.title}}</view>
 							<view>{{item2.price}}</view>
 						</view>
@@ -33,10 +52,9 @@
 		data() {
 			return {
 				classify: '',
+				subTitle: '',
 				currentIndex: 0,
-				arr: 15,
 				goodsList: [],
-				rigthtScrollTop: 0,
 				leftScrollTop: 0
 			}
 		},
@@ -46,24 +64,20 @@
 		},
 		methods: {
 			toggle(index) {
-				if (!this.goodsList[index]) return false
+				this.subTitle = 'subTitle-' + index
 				this.currentIndex = index
-				let titleDistant = 30
-				let gapDistant = (this.goodsList[index].children.length - 1) * 7.5
-				let childrenDistant = this.goodsList[index].children.length * 75
-				this.rigthtScrollTop = index * (titleDistant + gapDistant + childrenDistant)
 			},
 			createList () {
-				let classifyList = uni.getStorageSync('iconList')
+				let classifyList = uni.getStorageSync('iconList') || new Array(20).fill({ text: 1 })
 				classifyList.forEach((value, i) => {
 					let obj = {
-						title: value.text,
+						title: value.text + i,
 						children: []
 					}
-					for (let j=0; j < 3; j++){
+					for (let j = 0; j < parseInt(Math.random() * 20 + 1); j++){
 						obj.children.push({
 							title: `${value.text}-${i}-${j}`,
-							price: '￥' + 3.5
+							price: '￥' + 3.5 * (i + j + 1)
 						})
 					}
 					this.goodsList.push(obj)
@@ -71,7 +85,7 @@
 			},
 			rightScroll (e) {
 				let rigthtScrollTop = e.detail.scrollTop
-				this.currentIndex = Math.floor(rigthtScrollTop / 270)
+				console.log(rigthtScrollTop)
 			}
 		},
 		created () {
@@ -81,10 +95,11 @@
 	}
 </script>
 
-<style scoped>
+<style scoped lang="scss">
 	.content {
-		height: 100vh;
+		height: calc(100vh - 88rpx);
 		width: 100%;
+		overflow: auto;
 	}
 
 	.classify {
@@ -94,7 +109,6 @@
 	}
 	.left{
 		flex: 2;
-		height: 100%;
 		background-color: #eee;
 	}
 	.scrollLeft {
@@ -109,18 +123,19 @@
 		flex: 8;
 		background-color: #fff;
 	}
+	
 	.title {
 		height: 150rpx;
 		line-height: 150rpx;
 		text-align: center;
-		background-color: #07C160;
+		background-color: green;
 		color: #fff;
 	}
+	
 	.scrollRight {
 		height: 100%;
 		box-sizing: border-box;
-		padding: 20rpx;
-		padding-top: 0;
+		padding: 0 10rpx;
 	}
 
 	.scrollYItem {
@@ -142,7 +157,7 @@
 		left: 6rpx;
 		top: 50%;
 		transform: translateY(-50%);
-		background-color: #0DAB2B;
+		background-color: $baseColor;
 	}
 	.indexBlockAcitve{
 		display: block;
