@@ -46,23 +46,22 @@
 					mask: true,
 					title:'已添加至购物车'
 				})
-				console.log(data);
 			}
 		}
 	}
 </script>
 
-<style>
+<style lang="scss">
 	.cardBody {
 		display: flex;
-		padding: 15rpx 0;
+		padding: 12rpx 0;
 		border-bottom: 1px solid #ccc;
 	}
 
 	.img {
 		height: 220rpx;
 		width: 240rpx;
-		background-color: #0DAB2B;
+		background-color: $baseColor;
 		margin-right: 15rpx;
 
 	}
@@ -91,12 +90,12 @@
 	}
 
 	.newPrice {
-		font-size: 42rpx;
-		color: #0DAB2B;
+		font-size: 36rpx;
+		color: $baseColor;
 	}
 
 	.oldPrice {
-		font-size: 26rpx;
+		font-size: 24rpx;
 		color: #999;
 		text-decoration: line-through;
 		margin-left: 15rpx;
@@ -111,13 +110,13 @@
 
 	.addButton {
 		display: block;
-		width: 50rpx;
-		height: 50rpx;
+		width: 46rpx;
+		height: 46rpx;
 		border-radius: 50%;
-		background-color: #0DAB2B;
+		background-color: $baseColor;
 		color: #fff;
 		text-align: center;
-		line-height: 48rpx;
-		font-size: 50rpx;
+		line-height: 46rpx;
+		font-size: 36rpx;
 	}
 </style>

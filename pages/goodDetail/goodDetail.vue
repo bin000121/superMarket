@@ -96,9 +96,11 @@
 		</view>
 		<u-popup 
 			v-model="showPopup"
-			height="600"
+			height="1000"
 			border-radius="30"
 			closeable
+			:duration="200"
+			:safe-area-inset-bottom="true"
 			mode="bottom">
 			<view class="popupBody">
 				<view class="popupBody_header">

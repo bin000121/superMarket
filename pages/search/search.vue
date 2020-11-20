@@ -8,22 +8,23 @@
 				shape="square"
 				:focus="true"
 				placeholder="这家店应有尽有~~"
+				:show-action="false"
 				v-model="iptValue"
-				>
-				</u-search>
+				@search="searchGood"
+				/>
 			</view>
 		</view>
 		
 		<view class="historySearch">
 			<view>历史搜索</view>
 			<view class="historyKeyList">
-				<view v-for="item in historyKeyList" :key="item" class="historyKey">{{item}}</view>
+				<view v-for="item in historyKeyList" :key="item" class="historyKey" @click="copyKeyWord(item)">{{item}}</view>
 			</view>
 		</view>
 		<view class="hotSearch">
 			<view>热门搜索</view>
 			<view class="hotKeyList">
-				<view v-for="item in hotKeyList" :key="item" class="hotKey">{{item}}</view>
+				<view v-for="item in hotKeyList" :key="item" class="hotKey" @click="copyKeyWord(item)">{{item}}</view>
 			</view>
 		</view>
 	</view>
@@ -61,11 +62,17 @@
 					'蔬菜',
 					'口红',
 					'奥利奥',
+					'三只松鼠'
 				]
 			}
 		},
 		methods: {
-			
+			copyKeyWord (key) {
+				this.iptValue = key
+			},
+			searchGood (e) {
+				console.log(e)
+			}
 		}
 	}
 </script>

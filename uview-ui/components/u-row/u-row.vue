@@ -3,7 +3,7 @@
 			alignItems: uAlignItem,
 			justifyContent: uJustify
 		}"
-		@tap.stop.prevent="click"
+		@tap="click"
 	>
 		<slot />
 	</view>
@@ -36,11 +36,11 @@
 			align: {
 				type: String,
 				default: 'center'
-			}
-		},
-		provide() {
-			return {
-				gutter: this.gutter
+			},
+			// 是否阻止事件传播
+			stop: {
+				type: Boolean,
+				default: true
 			}
 		},
 		computed: {
@@ -56,7 +56,7 @@
 			}
 		},
 		methods: {
-			click() {
+			click(e) {
 				this.$emit('click');
 			}
 		}
@@ -68,14 +68,14 @@
 
 	.u-row {
 		// 由于微信小程序编译后奇怪的页面结构，只能使用float布局实现，flex无法实现
-		/* #ifndef MP-WEIXIN || MP-QQ */
-		display: flex;
+		/* #ifndef MP-WEIXIN || MP-QQ || MP-TOUTIAO */
+		@include vue-flex;
 		/* #endif */
 		flex-wrap: wrap;
 	}
 
 	.u-row:after {
-		/* #ifdef MP-WEIXIN || MP-QQ */
+		/* #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO */
 		display: table;
 		clear: both;
 		content: "";

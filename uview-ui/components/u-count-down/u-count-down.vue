@@ -1,6 +1,6 @@
 <template>
 	<view class="u-countdown">
-		<view class="u-countdown-item" :style="[itemStyle]" v-if="showDays && (hideZeroDay || (!hideZeroDay && d != '0'))">
+		<view class="u-countdown-item" :style="[itemStyle]" v-if="showDays && (hideZeroDay || (!hideZeroDay && d != '00'))">
 			<view class="u-countdown-time" :style="[letterStyle]">
 				{{ d }}
 			</view>
@@ -8,7 +8,7 @@
 		<view
 			class="u-countdown-colon"
 			:style="{fontSize: separatorSize + 'rpx', color: separatorColor, paddingBottom: separator == 'colon' ? '4rpx' : 0}"
-			v-if="showDays && (hideZeroDay || (!hideZeroDay && d != '0'))"
+			v-if="showDays && (hideZeroDay || (!hideZeroDay && d != '00'))"
 		>
 			{{ separator == 'colon' ? ':' : '天' }}
 		</view>
@@ -249,6 +249,7 @@ export default {
 			showHour = showHour < 10 ? '0' + showHour : showHour;
 			minute = minute < 10 ? '0' + minute : minute;
 			second = second < 10 ? '0' + second : second;
+			day = day < 10 ? '0' + day : day;
 			this.d = day;
 			this.h = showHour;
 			this.i = minute;
@@ -279,12 +280,14 @@ export default {
 	@import "../../libs/css/style.components.scss";
 
 	.u-countdown {
-		display: inline-flex;
+		/* #ifndef APP-NVUE */
+		display: inline-flex;		
+		/* #endif */
 		align-items: center;
 	}
 
 	.u-countdown-item {
-		display: flex;
+		@include vue-flex;
 		align-items: center;
 		justify-content: center;
 		padding: 2rpx;
@@ -300,7 +303,7 @@ export default {
 	}
 
 	.u-countdown-colon {
-		display: flex;
+		@include vue-flex;
 		justify-content: center;
 		padding: 0 5rpx;
 		line-height: 1;

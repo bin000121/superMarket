@@ -8,7 +8,8 @@
 		alignItems: uAlignItem,
 		justifyContent: uJustify,
 		textAlign: textAlign
-	}" @tap.stop.prevent="click">
+	}"
+	 @tap="click">
 		<slot></slot>
 	</view>
 </template>
@@ -50,9 +51,28 @@
 			textAlign: {
 				type: String,
 				default: 'left'
+			},
+			// 是否阻止事件传播
+			stop: {
+				type: Boolean,
+				default: true
 			}
 		},
-		inject: ['gutter'],
+		data() {
+			return {
+				gutter: 20, // 给col添加间距，左右边距各占一半，从父组件u-row获取
+			}
+		},
+		created() {
+			this.parent = false;
+		},
+		mounted() {
+			// 获取父组件实例，并赋值给对应的参数
+			this.parent = this.$u.$parent.call(this, 'u-row');
+			if (this.parent) {
+				this.gutter = this.parent.gutter;
+			}
+		},
 		computed: {
 			uJustify() {
 				if (this.justify == 'end' || this.justify == 'start') return 'flex-' + this.justify;
@@ -66,7 +86,7 @@
 			}
 		},
 		methods: {
-			click() {
+			click(e) {
 				this.$emit('click');
 			}
 		}
@@ -75,8 +95,9 @@
 
 <style lang="scss">
 	@import "../../libs/css/style.components.scss";
+
 	.u-col {
-		/* #ifdef MP-WEIXIN || MP-QQ */
+		/* #ifdef MP-WEIXIN || MP-QQ || MP-TOUTIAO */
 		float: left;
 		/* #endif */
 	}

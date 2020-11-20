@@ -82,6 +82,7 @@ const $u = {
 	date: timeFormat, // 另名date
 	timeFrom,
 	colorGradient: colorGradient.colorGradient,
+	colorToRgba: colorGradient.colorToRgba,
 	guid,
 	color,
 	sys,
@@ -112,8 +113,11 @@ const $u = {
 	throttle,
 }
 
+// $u挂载到uni对象上
+uni.$u = $u
+
 const install = Vue => {
-	Vue.mixin(mixin)
+	Vue.mixin(mixin) 
 	if (Vue.prototype.openShare) {
 		Vue.mixin(mpShare);
 	}

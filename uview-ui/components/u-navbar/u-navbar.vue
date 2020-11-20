@@ -14,7 +14,8 @@
 					    class="u-title u-line-1"
 					    :style="{
 							color: titleColor,
-							fontSize: titleSize + 'rpx'
+							fontSize: titleSize + 'rpx',
+							fontWeight: titleBold ? 'bold' : 'normal'
 						}">
 						{{ title }}
 					</view>
@@ -114,6 +115,11 @@
 			titleColor: {
 				type: String,
 				default: '#606266'
+			},
+			// 标题字体是否加粗
+			titleBold: {
+				type: Boolean,
+				default: false
 			},
 			// 标题的字体大小
 			titleSize: {
@@ -252,14 +258,14 @@
 	}
 
 	.u-navbar-inner {
-		display: flex;
+		@include vue-flex;
 		justify-content: space-between;
 		position: relative;
 		align-items: center;
 	}
 
 	.u-back-wrap {
-		display: flex;
+		@include vue-flex;
 		align-items: center;
 		flex: 1;
 		flex-grow: 0;
@@ -272,7 +278,7 @@
 	}
 
 	.u-navbar-content-title {
-		display: flex;
+		@include vue-flex;
 		align-items: center;
 		justify-content: center;
 		flex: 1;
@@ -296,14 +302,14 @@
 
 	.u-navbar-right {
 		flex: 1;
-		display: flex;
+		@include vue-flex;
 		align-items: center;
 		justify-content: flex-end;
 	}
 
 	.u-slot-content {
 		flex: 1;
-		display: flex;
+		@include vue-flex;
 		align-items: center;
 	}
 </style>

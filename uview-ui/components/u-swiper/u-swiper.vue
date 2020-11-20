@@ -5,17 +5,17 @@
 		<swiper :current="elCurrent" @change="change" @animationfinish="animationfinish" :interval="interval" :circular="circular" :duration="duration" :autoplay="autoplay"
 		 :previous-margin="effect3d ? effect3dPreviousMargin + 'rpx' : '0'" :next-margin="effect3d ? effect3dPreviousMargin + 'rpx' : '0'"
 		 :style="{
-				height: height + 'rpx'
+				height: height + 'rpx',
+				backgroundColor: bgColor
 			}">
 			<swiper-item class="u-swiper-item" v-for="(item, index) in list" :key="index">
 				<view class="u-list-image-wrap" @tap.stop.prevent="listClick(index)" :class="[uCurrent != index ? 'u-list-scale' : '']" :style="{
 						borderRadius: `${borderRadius}rpx`,
 						transform: effect3d && uCurrent != index ? 'scaleY(0.9)' : 'scaleY(1)',
 						margin: effect3d && uCurrent != index ? '0 20rpx' : 0,
-						backgroundColor: bgColor
 					}">
-					<image class="u-swiper-image" :src="item[name]" :mode="imgMode"></image>
-					<view v-if="title" class="u-swiper-title u-line-1" :style="[{
+					<image class="u-swiper-image" :src="item[name] || item" :mode="imgMode"></image>
+					<view v-if="title && item.title" class="u-swiper-title u-line-1" :style="[{
 							'padding-bottom': titlePaddingBottom
 						}, titleStyle]">
 						{{ item.title }}
@@ -243,7 +243,9 @@
 		width: 100%;
 		will-change: transform;
 		height: 100%;
+		/* #ifndef APP-NVUE */
 		display: block;
+		/* #endif */
 		/* #ifdef H5 */
 		pointer-events: none;
 		/* #endif */
@@ -252,7 +254,7 @@
 	.u-swiper-indicator {
 		padding: 0 24rpx;
 		position: absolute;
-		display: flex;
+		@include vue-flex;
 		width: 100%;
 		z-index: 1;
 	}
@@ -331,7 +333,7 @@
 	}
 
 	.u-swiper-item {
-		display: flex;
+		@include vue-flex;
 		overflow: hidden;
 		align-items: center;
 	}

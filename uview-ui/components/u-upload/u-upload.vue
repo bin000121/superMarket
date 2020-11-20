@@ -237,11 +237,18 @@ export default {
 			type: Function,
 			default: null
 		},
+		// 移除文件前的钩子
+		beforeRemove: {
+			type: Function,
+			default: null
+		},
 		// 允许上传的图片后缀
 		limitType:{
 			type: Array,
 			default() {
-				return ['png', 'jpg', 'jpeg', 'webp', 'gif'];
+				// 支付宝小程序真机选择图片的后缀为"image"
+				// https://opendocs.alipay.com/mini/api/media-image
+				return ['png', 'jpg', 'jpeg', 'webp', 'gif', 'image'];
 			}
 		},
 		// 在各个回调事件中的最后一个参数返回，用于区别是哪一个组件的事件
@@ -336,7 +343,7 @@ export default {
 					if (this.autoUpload) this.uploadFile(listOldLength);
 				})
 				.catch(error => {
-					// this.$emit('on-error', error);
+					this.$emit('on-choose-fail', error);
 				});
 		},
 		// 提示用户消息
@@ -394,8 +401,10 @@ export default {
 						return this.uploadFile(index + 1);
 					})
 				} else if(beforeResponse === false) {
-					 // 如果返回false，继续下一张图片的上传
+					// 如果返回false，继续下一张图片的上传
 					return this.uploadFile(index + 1);
+				} else {
+					// 此处为返回"true"的情形，这里不写代码，就跳过此处，继续执行当前的上传逻辑
 				}
 			}
 			// 检查上传地址
@@ -455,18 +464,47 @@ export default {
 			uni.showModal({
 				title: '提示',
 				content: '您确定要删除此项吗？',
-				success: res => {
+				success: async (res) => {
 					if (res.confirm) {
-						if (this.lists[index].process < 100 && this.lists[index].process > 0) {
-							typeof this.lists[index].uploadTask != 'undefined' && this.lists[index].uploadTask.abort();
+						// 先检查是否有定义before-remove移除前钩子
+						// 执行before-remove钩子
+						if(this.beforeRemove && typeof(this.beforeRemove) === 'function') {
+							// 此处钩子执行 原理同before-remove参数，见上方注释
+							let beforeResponse = this.beforeRemove.bind(this.$u.$parent.call(this))(index, this.lists);
+							// 判断是否返回了promise
+							if (!!beforeResponse && typeof beforeResponse.then === 'function') {
+								await beforeResponse.then(res => {
+									// promise返回成功，不进行动作，继续上传
+									this.handlerDeleteItem(index);
+								}).catch(err => {
+									// 如果进入promise的reject，终止删除操作
+									this.showToast('已终止移除');
+								})
+							} else if(beforeResponse === false) {
+								// 返回false，终止删除
+								this.showToast('已终止移除');
+							} else {
+								// 如果返回true，执行删除操作
+								this.handlerDeleteItem(index);
+							}
+						} else {
+							// 如果不存在before-remove钩子，
+							this.handlerDeleteItem(index);
 						}
-						this.lists.splice(index, 1);
-						this.$forceUpdate();
-						this.$emit('on-remove', index, this.lists, this.index);
-						this.showToast('移除成功');
 					}
 				}
 			});
+		},
+		// 执行移除图片的动作，上方代码只是判断是否可以移除
+		handlerDeleteItem(index) {
+			// 如果文件正在上传中，终止上传任务，进度在0 < progress < 100则意味着正在上传
+			if (this.lists[index].process < 100 && this.lists[index].process > 0) {
+				typeof this.lists[index].uploadTask != 'undefined' && this.lists[index].uploadTask.abort();
+			}
+			this.lists.splice(index, 1);
+			this.$forceUpdate();
+			this.$emit('on-remove', index, this.lists, this.index);
+			this.showToast('移除成功');
 		},
 		// 用户通过ref手动的形式，移除一张图片
 		remove(index) {
@@ -525,7 +563,7 @@ export default {
 @import '../../libs/css/style.components.scss';
 
 .u-upload {
-	display: flex;
+	@include vue-flex;
 	flex-wrap: wrap;
 	align-items: center;
 }
@@ -538,7 +576,9 @@ export default {
 	background: rgb(244, 245, 246);
 	position: relative;
 	border-radius: 10rpx;
-	display: inline-flex;
+	/* #ifndef APP-NVUE */
+	display: flex;
+	/* #endif */
 	align-items: center;
 	justify-content: center;
 }
@@ -578,13 +618,13 @@ export default {
 	border-radius: 100rpx;
 	width: 44rpx;
 	height: 44rpx;
-	display: flex;
+	@include vue-flex;
 	align-items: center;
 	justify-content: center;
 }
 
 .u-icon {
-	display: flex;
+	@include vue-flex;
 	align-items: center;
 	justify-content: center;
 }

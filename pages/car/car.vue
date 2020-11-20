@@ -240,6 +240,7 @@
 				// return Boolean(uni.getStorageSync('token'))
 			},
 			empty () {
+				if (!this.arr.length) return true
 				return false
 			},
 		}
@@ -379,16 +380,16 @@
 	}
 
 	.goodCount {
-		padding: 0 5rpx;
+		box-sizing: border-box;
+		padding: 0 8rpx 0 4rpx;
 		height: 50rpx;
-		width: 60rpx;
 		line-height: 46rpx;
 		text-align: center;
 		color: #0DAB2B;
 		border: 2rpx solid #0DAB2B;
 		border-radius: 15rpx;
-		font-size: 34rpx;
-		margin-left: calc(100% - 60rpx);
+		font-size: 32rpx;
+		margin-left: calc(100% - 60rpx - 10rpx);
 	}
 
 	.closeNumBox {
