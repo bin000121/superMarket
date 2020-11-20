@@ -15,7 +15,6 @@
 						<text style="letter-spacing: 1px;font-weight: 500;">
 							{{item.title}}
 						</text>
-						<!-- <view :class="['indexBlock', item===currentIndex?'indexBlockAcitve': '']"></view> -->
 					</view>
 				</scroll-view>
 			</view>
@@ -55,7 +54,8 @@
 				subTitle: '',
 				currentIndex: 0,
 				goodsList: [],
-				leftScrollTop: 0
+				leftScrollTop: 0,
+				topList: []
 			}
 		},
 		onLoad(data) {
@@ -86,11 +86,22 @@
 			rightScroll (e) {
 				let rigthtScrollTop = e.detail.scrollTop
 				console.log(rigthtScrollTop)
+			},
+			getNodeInfo () {
+				let query = uni.createSelectorQuery().in(this)
+				query.selectAll('.title').boundingClientRect(data => {
+					console.log(data)
+					this.topList = data.map(value => Math.floor(value.top))
+					console.log(this.topList)
+				}).exec()
 			}
 		},
 		created () {
 			this.createList()
 			this.toggle(this.classifyIndex)
+		},
+		mounted() {
+			this.getNodeInfo()
 		}
 	}
 </script>
