@@ -6,10 +6,12 @@
 				<scroll-view
 					scroll-y
 					class="scrollLeft"
+					:scroll-top="leftScrollTop"
+					scroll-with-animation
 				>
 					<view
-						:class="{'scrollYItem': true, 'scrollYItemActive': index === currentIndex }"
 						v-for="(item, index) in goodsList"
+						:class="{'scrollYItem': true, 'scrollYItemActive': currentIndex === index }"
 						:key="item.title" 
 						@click="toggle(index)">
 						<text style="letter-spacing: 1px;font-weight: 500;">
@@ -23,14 +25,14 @@
 				<scroll-view
 					scroll-y
 					class="scrollRight"
-					:scroll-into-view="subTitle"
+					:scroll-into-view="right_title"
 					@scroll="rightScroll"
 					scroll-with-animation
 				>
 					<view class="good" v-for="(item, index) in goodsList" :key="item.title">
 						<view
 							class="title"
-							:id="`subTitle-${index}`"
+							:id="`right_title_${index}`"
 						>{{item.title}}</view>
 						<view
 							class="good_body"
@@ -51,24 +53,27 @@
 		data() {
 			return {
 				classify: '',
-				subTitle: '',
+				right_title: '',
+				windowHeight: 0,
 				currentIndex: 0,
 				goodsList: [],
 				leftScrollTop: 0,
-				topList: []
+				oneLeftItemHeight: 0,
+				AllLeftTopList: [],
+				AllRightTopList: []
 			}
 		},
 		onLoad(data) {
-			this.classifyIndex = data.index
-			this.toggle(data.index)
+			this.toggle(data.index || this.currentIndex)
 		},
 		methods: {
 			toggle(index) {
-				this.subTitle = 'subTitle-' + index
+				this.right_title = 'right_title_' + index
 				this.currentIndex = index
 			},
 			createList () {
-				let classifyList = uni.getStorageSync('iconList') || new Array(20).fill({ text: 1 })
+				// let classifyList = uni.getStorageSync('iconList') 
+				let classifyList = new Array(20).fill({ text: 1 })
 				classifyList.forEach((value, i) => {
 					let obj = {
 						title: value.text + i,
@@ -83,22 +88,48 @@
 					this.goodsList.push(obj)
 				})
 			},
-			rightScroll (e) {
+			rightScroll(e) {
 				let rigthtScrollTop = e.detail.scrollTop
-				console.log(rigthtScrollTop)
+				let left_index = this.AllRightTopList.findIndex(value => rigthtScrollTop < value)
+				this.currentIndex = left_index ? left_index - 1 : left_index
 			},
 			getNodeInfo () {
 				let query = uni.createSelectorQuery().in(this)
+				this.windowHeight = uni.getSystemInfoSync().windowHeight
+				// 左边每一项距离顶部高度
+				query.selectAll('.scrollYItem').boundingClientRect(data => {
+					this.AllLeftTopList = data.map(value => value.top)
+					this.oneLeftItemHeight = this.AllLeftTopList[1] - this.AllLeftTopList[0]
+				}).exec()
+				// 右边每一项距离顶部高度
 				query.selectAll('.title').boundingClientRect(data => {
-					console.log(data)
-					this.topList = data.map(value => Math.floor(value.top))
-					console.log(this.topList)
+					this.AllRightTopList = data.map(value => value.top)
+				}).exec()
+			}
+		},
+		watch: {
+			'currentIndex' (newV) {
+				let query = uni.createSelectorQuery()
+				query.select('.scrollLeft').fields({
+					size: true,
+					scrollOffset: true
+				}, res => {
+					let currentTop = this.AllLeftTopList[newV]
+					// 当前项距离顶部的距离 + 该项高 > 当前可用屏高 + 当前卷曲的距离, 那就向下滚动
+					if (currentTop + this.oneLeftItemHeight > res.height + res.scrollTop) {
+						this.leftScrollTop = currentTop + this.oneLeftItemHeight - res.height
+					}
+					
+					// 当前项距离顶部距离 < 当前卷曲的距离，直那就向上滚动
+					if (currentTop < res.scrollTop) {
+						this.leftScrollTop = currentTop
+					}
 				}).exec()
 			}
 		},
 		created () {
 			this.createList()
-			this.toggle(this.classifyIndex)
+			this.toggle(this.currentIndex)
 		},
 		mounted() {
 			this.getNodeInfo()
@@ -110,7 +141,6 @@
 	.content {
 		height: calc(100vh - 88rpx);
 		width: 100%;
-		overflow: auto;
 	}
 
 	.classify {
