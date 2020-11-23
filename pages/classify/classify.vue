@@ -1,49 +1,46 @@
 <template>
 	<view class="content">
-		<view class="classify">
-			<!-- left -->
-			<view class="left">
-				<scroll-view
-					scroll-y
-					class="scrollLeft"
-					:scroll-top="leftScrollTop"
-					scroll-with-animation
-				>
+		<!-- left -->
+		<view class="left">
+			<scroll-view
+				scroll-y
+				class="scrollLeft"
+				:scroll-top="leftScrollTop"
+			>
+				<view
+					v-for="(item, index) in goodsList"
+					:class="['scrollYItem', currentIndex === index ? 'scrollYItemActive': '' ]"
+					:key="item.title" 
+					@click="toggle(index)">
+					<text style="letter-spacing: 1px;font-weight: 500;">
+						{{item.title}}
+					</text>
+				</view>
+			</scroll-view>
+		</view>
+		<!-- right -->
+		<view class="right">
+			<scroll-view
+				scroll-y
+				class="scrollRight"
+				:scroll-into-view="right_title"	
+				:lower-threshold="100"
+				@scroll="rightScroll"
+			>
+				<view class="good" v-for="(item, index) in goodsList" :key="item.title">
 					<view
-						v-for="(item, index) in goodsList"
-						:class="{'scrollYItem': true, 'scrollYItemActive': currentIndex === index }"
-						:key="item.title" 
-						@click="toggle(index)">
-						<text style="letter-spacing: 1px;font-weight: 500;">
-							{{item.title}}
-						</text>
+						class="title"
+						:id="`right_title_${index}`"
+					>{{item.title}}</view>
+					<view
+						class="good_body"
+						v-for="item2 in item.children"
+						:key="item2.title">
+						<view class="title2">{{item2.title}}</view>
+						<view>{{item2.price}}</view>
 					</view>
-				</scroll-view>
-			</view>
-			<!-- right -->
-			<view class="right">
-				<scroll-view
-					scroll-y
-					class="scrollRight"
-					:scroll-into-view="right_title"
-					@scroll="rightScroll"
-					scroll-with-animation
-				>
-					<view class="good" v-for="(item, index) in goodsList" :key="item.title">
-						<view
-							class="title"
-							:id="`right_title_${index}`"
-						>{{item.title}}</view>
-						<view
-							class="good_body"
-							v-for="item2 in item.children"
-							:key="item2.title">
-							<view class="title2">{{item2.title}}</view>
-							<view>{{item2.price}}</view>
-						</view>
-					</view>
-				</scroll-view>
-			</view>
+				</view>
+			</scroll-view>
 		</view>
 	</view>
 </template>
@@ -54,7 +51,6 @@
 			return {
 				classify: '',
 				right_title: '',
-				windowHeight: 0,
 				currentIndex: 0,
 				goodsList: [],
 				leftScrollTop: 0,
@@ -64,12 +60,17 @@
 			}
 		},
 		onLoad(data) {
-			this.toggle(data.index || this.currentIndex)
+			data.index && this.toggle(parseInt(data.index))
+		},
+		onReady() {
+			this.$nextTick(()=> {
+				this.getNodeInfo()
+			})
 		},
 		methods: {
 			toggle(index) {
-				this.right_title = 'right_title_' + index
 				this.currentIndex = index
+				this.right_title = 'right_title_' + index
 			},
 			createList () {
 				// let classifyList = uni.getStorageSync('iconList') 
@@ -89,65 +90,59 @@
 				})
 			},
 			rightScroll(e) {
-				let rigthtScrollTop = e.detail.scrollTop
+				let rigthtScrollTop = e.detail.scrollTop + 1
 				let left_index = this.AllRightTopList.findIndex(value => rigthtScrollTop < value)
 				this.currentIndex = left_index ? left_index - 1 : left_index
 			},
 			getNodeInfo () {
 				let query = uni.createSelectorQuery().in(this)
-				this.windowHeight = uni.getSystemInfoSync().windowHeight
 				// 左边每一项距离顶部高度
 				query.selectAll('.scrollYItem').boundingClientRect(data => {
-					this.AllLeftTopList = data.map(value => value.top)
+					this.AllLeftTopList = data.map(value => value.top + (0 - data[0].top))
 					this.oneLeftItemHeight = this.AllLeftTopList[1] - this.AllLeftTopList[0]
 				}).exec()
 				// 右边每一项距离顶部高度
 				query.selectAll('.title').boundingClientRect(data => {
-					this.AllRightTopList = data.map(value => value.top)
+					this.AllRightTopList = data.map(value => value.top + (0 - data[0].top))
 				}).exec()
 			}
 		},
 		watch: {
 			'currentIndex' (newV) {
-				let query = uni.createSelectorQuery()
-				query.select('.scrollLeft').fields({
-					size: true,
-					scrollOffset: true
-				}, res => {
-					let currentTop = this.AllLeftTopList[newV]
-					// 当前项距离顶部的距离 + 该项高 > 当前可用屏高 + 当前卷曲的距离, 那就向下滚动
-					if (currentTop + this.oneLeftItemHeight > res.height + res.scrollTop) {
-						this.leftScrollTop = currentTop + this.oneLeftItemHeight - res.height
-					}
-					
-					// 当前项距离顶部距离 < 当前卷曲的距离，直那就向上滚动
-					if (currentTop < res.scrollTop) {
-						this.leftScrollTop = currentTop
-					}
-				}).exec()
+				setTimeout(() => {
+					let query = uni.createSelectorQuery()
+					query.select('.scrollLeft').fields({
+						size: true,
+						scrollOffset: true
+					}, res => {
+						let currentTop = this.AllLeftTopList[newV]
+						// 当前项距离顶部的距离 + 该项高 > 当前可用屏高 + 当前卷曲的距离, 那就向下滚动
+						if (currentTop + this.oneLeftItemHeight > res.height + res.scrollTop) {
+							if (this.currentIndex === this.goodsList.length) return
+							this.leftScrollTop = currentTop +  this.oneLeftItemHeight - res.height
+						}
+						// 当前项距离顶部距离 < 当前卷曲的距离，直那就向上滚动
+						if (currentTop < res.scrollTop) {
+							this.leftScrollTop = currentTop
+						}
+					}).exec()
+				}, 0)
 			}
 		},
 		created () {
 			this.createList()
-			this.toggle(this.currentIndex)
-		},
-		mounted() {
-			this.getNodeInfo()
 		}
 	}
 </script>
 
 <style scoped lang="scss">
 	.content {
-		height: calc(100vh - 88rpx);
+		// height: calc(100vh - 88rpx);
+		height: 100%;
 		width: 100%;
+		display: flex;
 	}
 
-	.classify {
-		display: flex;
-		height: 100%;
-		position: relative;
-	}
 	.left{
 		flex: 2;
 		background-color: #eee;
@@ -158,7 +153,7 @@
 		box-sizing: border-box;
 	}
 	.scrollLeft view:last-child{
-		margin-bottom: 30rpx;
+		margin-bottom: 60rpx;
 	}
 	.right {
 		flex: 8;

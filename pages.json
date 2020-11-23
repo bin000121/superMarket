@@ -26,10 +26,7 @@
 			"path": "pages/classify/classify",
 			"style": {
 				"navigationBarTitleText": "分类",
-				"disableScroll": true,
-				"app-plus":{
-					"scrollIndicator": "none"
-				}
+				"disableScroll": true
 			}
 		},
 		{

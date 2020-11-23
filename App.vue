@@ -30,8 +30,10 @@
 	body::-webkit-scrollbar {
 	    display: none;
 	}
+	uni-page-body,
 	html,
 	body {
+		height: 100%;
 		-webkit-overflow-scrolling: touch!important;
 		overflow-scrolling: touch;
 	}
