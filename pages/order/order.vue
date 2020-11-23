@@ -37,7 +37,8 @@
 
 <style scoped lang="scss">
 .order{
-	height: 100vh;
+	height: 100%;
 	background-color: #eee;
 }
+
 </style>

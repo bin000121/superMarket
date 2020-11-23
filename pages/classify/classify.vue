@@ -24,12 +24,11 @@
 				scroll-y
 				class="scrollRight"
 				:scroll-into-view="right_title"	
-				:lower-threshold="100"
 				@scroll="rightScroll"
 			>
 				<view class="good" v-for="(item, index) in goodsList" :key="item.title">
 					<view
-						class="title"
+						:class="['title', currentIndex === index ? 'sticky' : '']"
 						:id="`right_title_${index}`"
 					>{{item.title}}</view>
 					<view
@@ -46,6 +45,7 @@
 </template>
 
 <script>
+	import { throttle } from '../../utils/tool.js' 
 	export default {
 		data() {
 			return {
@@ -60,11 +60,9 @@
 			}
 		},
 		onLoad(data) {
-			data.index && this.toggle(parseInt(data.index))
-		},
-		onReady() {
-			this.$nextTick(()=> {
+			this.$nextTick(() => {
 				this.getNodeInfo()
+				data.index && this.toggle(parseInt(data.index))
 			})
 		},
 		methods: {
@@ -80,7 +78,8 @@
 						title: value.text + i,
 						children: []
 					}
-					for (let j = 0; j < parseInt(Math.random() * 20 + 1); j++){
+					// for (let j = 0; j < parseInt(Math.random() * 20 + 1); j++){
+					for (let j = 0; j < 20; j++){
 						obj.children.push({
 							title: `${value.text}-${i}-${j}`,
 							price: '￥' + 3.5 * (i + j + 1)
@@ -89,11 +88,7 @@
 					this.goodsList.push(obj)
 				})
 			},
-			rightScroll(e) {
-				let rigthtScrollTop = e.detail.scrollTop + 1
-				let left_index = this.AllRightTopList.findIndex(value => rigthtScrollTop < value)
-				this.currentIndex = left_index ? left_index - 1 : left_index
-			},
+			rightScroll() {},
 			getNodeInfo () {
 				let query = uni.createSelectorQuery().in(this)
 				// 左边每一项距离顶部高度
@@ -109,28 +104,32 @@
 		},
 		watch: {
 			'currentIndex' (newV) {
-				setTimeout(() => {
-					let query = uni.createSelectorQuery()
-					query.select('.scrollLeft').fields({
-						size: true,
-						scrollOffset: true
-					}, res => {
-						let currentTop = this.AllLeftTopList[newV]
-						// 当前项距离顶部的距离 + 该项高 > 当前可用屏高 + 当前卷曲的距离, 那就向下滚动
-						if (currentTop + this.oneLeftItemHeight > res.height + res.scrollTop) {
-							if (this.currentIndex === this.goodsList.length) return
-							this.leftScrollTop = currentTop +  this.oneLeftItemHeight - res.height
-						}
-						// 当前项距离顶部距离 < 当前卷曲的距离，直那就向上滚动
-						if (currentTop < res.scrollTop) {
-							this.leftScrollTop = currentTop
-						}
-					}).exec()
-				}, 0)
+				let query = uni.createSelectorQuery()
+				query.select('.scrollLeft').fields({
+					size: true,
+					scrollOffset: true
+				}, res => {
+					let currentTop = this.AllLeftTopList[newV]
+					// 当前项距离顶部的距离 + 该项高 > 当前可用屏高 + 当前卷曲的距离, 那就向下滚动
+					if (currentTop + this.oneLeftItemHeight > res.height + res.scrollTop) {
+						if (this.currentIndex === this.goodsList.length) return
+						this.leftScrollTop = currentTop +  this.oneLeftItemHeight - res.height
+					}
+					// 当前项距离顶部距离 < 当前卷曲的距离，直那就向上滚动
+					if (currentTop < res.scrollTop) {
+						this.leftScrollTop = currentTop
+					}
+				}).exec()
 			}
 		},
 		created () {
 			this.createList()
+			this.rightScroll = throttle( e => {
+				let rigthtScrollTop = e.detail.scrollTop + 1
+				let left_index = this.AllRightTopList.findIndex(value => rigthtScrollTop < value)
+				if (left_index === -1) return this.currentIndex = this.goodsList.length - 1
+				this.currentIndex = left_index ? left_index - 1 : left_index
+			}, 50)
 		}
 	}
 </script>
@@ -166,8 +165,14 @@
 		text-align: center;
 		background-color: green;
 		color: #fff;
+		
 	}
 	
+	.sticky{
+		position: sticky;
+		top: 0;
+	}
+
 	.scrollRight {
 		height: 100%;
 		box-sizing: border-box;
@@ -204,9 +209,7 @@
 		height: 60rpx;
 		line-height: 60rpx;
 	}
-	.static{
-		position: static;
-	}
+
 	.good:last-child .good_body:last-child {
 		margin-bottom: 100rpx;
 	}
