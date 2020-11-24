@@ -20,7 +20,6 @@
 	view{
 		box-sizing: border-box!important;
 	}
-	/* #ff7b00 */
 	::-webkit-scrollbar{
 		width: 0;
 		height: 0;

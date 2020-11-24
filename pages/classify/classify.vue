@@ -28,7 +28,7 @@
 			>
 				<view class="good" v-for="(item, index) in goodsList" :key="item.title">
 					<view
-						:class="['title', currentIndex === index ? 'sticky' : '']"
+						:class="['title']"
 						:id="`right_title_${index}`"
 					>{{item.title}}</view>
 					<view
@@ -45,7 +45,7 @@
 </template>
 
 <script>
-	import { throttle } from '../../utils/tool.js' 
+	import api from '../../api/api.js'
 	export default {
 		data() {
 			return {
@@ -78,8 +78,7 @@
 						title: value.text + i,
 						children: []
 					}
-					// for (let j = 0; j < parseInt(Math.random() * 20 + 1); j++){
-					for (let j = 0; j < 20; j++){
+					for (let j = 0; j < parseInt(Math.random() * 20 + 1); j++){
 						obj.children.push({
 							title: `${value.text}-${i}-${j}`,
 							price: '￥' + 3.5 * (i + j + 1)
@@ -88,7 +87,12 @@
 					this.goodsList.push(obj)
 				})
 			},
-			rightScroll() {},
+			rightScroll (e) {
+				// let rigthtScrollTop = e.detail.scrollTop + 1
+				// let left_index = this.AllRightTopList.findIndex(value => rigthtScrollTop < value)
+				// if (left_index === -1) return this.currentIndex = this.goodsList.length - 1
+				// this.currentIndex = left_index ? left_index - 1 : left_index
+			},
 			getNodeInfo () {
 				let query = uni.createSelectorQuery().in(this)
 				// 左边每一项距离顶部高度
@@ -124,19 +128,18 @@
 		},
 		created () {
 			this.createList()
-			this.rightScroll = throttle( e => {
+			this.rightScroll = this.$tool.throttle( e => {
 				let rigthtScrollTop = e.detail.scrollTop + 1
 				let left_index = this.AllRightTopList.findIndex(value => rigthtScrollTop < value)
 				if (left_index === -1) return this.currentIndex = this.goodsList.length - 1
 				this.currentIndex = left_index ? left_index - 1 : left_index
-			}, 50)
+			}, 100)
 		}
 	}
 </script>
 
 <style scoped lang="scss">
 	.content {
-		// height: calc(100vh - 88rpx);
 		height: 100%;
 		width: 100%;
 		display: flex;
@@ -159,14 +162,6 @@
 		background-color: #fff;
 	}
 	
-	.title {
-		height: 150rpx;
-		line-height: 150rpx;
-		text-align: center;
-		background-color: green;
-		color: #fff;
-		
-	}
 	
 	.sticky{
 		position: sticky;
@@ -200,18 +195,21 @@
 		transform: translateY(-50%);
 		background-color: $baseColor;
 	}
-	.indexBlockAcitve{
-		display: block;
-	}
 	
-	.good > .title {
-		text-align: left;
+	.title {
 		height: 60rpx;
 		line-height: 60rpx;
+		text-align: center;
+		background-color: green;
+		color: #fff;
 	}
 
+
+	.title + view {
+		z-index: 8888;
+	}
 	.good:last-child .good_body:last-child {
-		margin-bottom: 100rpx;
+		margin-bottom: 60rpx;
 	}
 	.good_body{
 		height: 150rpx;
