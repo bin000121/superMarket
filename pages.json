@@ -3,10 +3,8 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "阿荣超市",
-				"app-plus":{
-					"scrollIndicator": "none"
-				}
+				"navigationBarTitleText": "阿荣乐购"
+				
 			}
 		},
 		{
@@ -19,7 +17,10 @@
 		{
 			"path": "pages/car/car",
 			"style": {
-				"navigationBarTitleText": "购物车"
+				"navigationBarTitleText": "购物车",
+				"app-plus": {
+					"titleNView": false
+				}
 			}
 		},
 		{
@@ -36,28 +37,34 @@
 				"navigationBarTextStyle":"black",
 				"navigationBarBackgroundColor": "#fff"
 			}
-		}
-	    ,{
+		},
+		{
             "path" : "pages/order/order",
             "style" : {
 				"navigationBarTitleText": "订单"
 			}
-        }
-        ,{
+        },
+		{
             "path" : "pages/goodDetail/goodDetail",
             "style" : {
-				"navigationBarTitleText":"商品详情",
-				"app-plus":{
-					"scrollIndicator": "none"
-				}
+				"navigationBarTitleText":"商品详情"
+			}
+        },
+		{
+            "path" : "pages/discount/discount",
+            "style" : {
+				"navigationBarTitleText":"折扣"
 			}
         }
     ],
 	"globalStyle": {
 		"navigationBarTextStyle": "white",
-		"navigationBarTitleText": "银鹭超市",
+		"navigationBarTitleText": "阿荣乐购",
 		"navigationBarBackgroundColor": "#1677b3",
-		"backgroundColor": "#fff"
+		"backgroundColor": "#fff",
+		"app-plus":{
+			"scrollIndicator": "none"
+		}
 	},
 	"easycom": {
 		"autoscan": true,
@@ -81,10 +88,10 @@
 			"text": "购物车"
 		},
 		{
-			"pagePath": "pages/order/order",
+			"pagePath": "pages/discount/discount",
 			"iconPath": "static/tabbar/order.png",
 			"selectedIconPath": "static/tabbar/order_active.png",
-			"text": "订单"
+			"text": "折扣"
 		},
 		{
 			"pagePath": "pages/mine/mine",

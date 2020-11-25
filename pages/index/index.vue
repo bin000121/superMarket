@@ -55,7 +55,7 @@
 		</view>
 
 		<view style="padding: 20rpx;">
-			<view style="color: #1677b3;font-size: 32rpx;text-align: center;border-bottom: 1px solid #eee;padding-bottom: 15rpx;">掌柜推荐
+			<view style="color: #1677b3;font-size: 32rpx;text-align: center;border-bottom: 1px solid #eee;padding-bottom: 15rpx;">店家推荐
 				&gt;</view>
 		</view>
 		<view style="padding: 0 20rpx 10rpx; border-bottom: 18rpx solid #eee;">
@@ -77,7 +77,7 @@
 
 		<view style="padding: 20rpx;border-bottom: 18rpx solid #eee;">
 			<view>
-				<text style="color: #1677b3;font-weight: bold;font-size: 36rpx;letter-spacing: 1px;">银鹭优选</text>
+				<text style="color: #1677b3;font-weight: bold;font-size: 36rpx;letter-spacing: 1px;">好货优选</text>
 			</view>
 			<view>
 				<card :data="item" v-for="item in cardList" :key=item.id></card>
@@ -306,14 +306,13 @@
 		white-space: nowrap;
 		display: flex;
 		color: #444;
-
 	}
 
 	.scrollView {
 		display: inline-block;
 		height: 100%;
 		width: 200rpx;
-		margin-right: 32rpx;
+		margin-right: 16rpx;
 	}
 
 	.scrollView:last-child {

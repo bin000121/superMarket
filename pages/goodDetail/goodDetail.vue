@@ -85,13 +85,13 @@
 				<view style="width: 45%;height: 5rpx;background-color: #eee;"></view>
 				<view style="width: 15%;font-size: 30rpx;background-color: #fff;text-align: center;position: absolute;top: -18rpx;left: 50%;transform: translateX(-50%);letter-spacing: 2rpx;font-weight: 700;">详情</view>
 			</view>
-			<scroll-view scroll-y @scroll="handleScrollY" style="height: 3000rpx;">
+			<scroll-view scroll-y @scroll="handleScrollY">
 				<view style="height: 1000rpx;background-color: pink;"></view>
 				<view style="height: 1000rpx;background-color: blue;"></view>
 				<view style="height: 1000rpx;background-color: orange;"></view>
 			</scroll-view>
 		</view>
-		<view style="position: fixed;bottom: 0;left: 0;width: 100%;">
+		<view style="position: fixed;bottom: 0;left: 0;width: 100%;height: 100rpx;">
 			<uniGoodsNav :buttonGroup="buttonGroup" :options="options" @click="likeGoods" @buttonClick="openPopup"></uniGoodsNav>
 		</view>
 		<u-popup 
@@ -111,7 +111,6 @@
 						<view class="popupBody_header_desc_text">请选择 口味</view>
 					</view>
 				</view>
-				<view class="selection"></view>
 				<view class="goodNum">
 					<view class="goodNum_text">商品数量</view>
 					<view>
@@ -159,12 +158,14 @@
 			}
 		},
 		onPageScroll (e) {
-			this.showToTop = e.scrollTop > 450
 		},
 		onLoad (data) {
 			this.goodId = data.goodId
 		},
 		created() {
+			this.onPageScroll = this.$tool.throttle(() => {
+				this.showToTop = e.scrollTop > 450
+			}, 200)
 			this.getGood()
 		},
 		methods: {
@@ -227,8 +228,7 @@
 
 <style scoped>
 	.goodDetail {
-		min-height: 100vh;
-		overflow: hidden;
+		height: 100%;
 		position: relative;
 	}
 
@@ -313,7 +313,9 @@
 	}
 
 	.detailImg {
-		margin: 40rpx 0 100rpx;
+		/* margin: 40rpx 0 100rpx; */
+		margin-top: 40rpx;
+		margin-bottom: 100rpx;
 	}
 
 	.popup {

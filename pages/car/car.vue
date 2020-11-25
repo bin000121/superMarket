@@ -1,10 +1,11 @@
 <template>
 	<view class="shopCar" v-if="token && !empty">
+		<view class="status_bar"></view>
 		<view class="goodListBox">
 			<view class="allGood">
 				共 {{arr.length}} 件商品
 			</view>
-			<scroll-view scroll-y="true" class="goodList">
+			<scroll-view scroll-y class="goodList">
 				<view class="card" v-for="(item, index) in arr" :key="item.id">
 					<view class="card_checkBox">
 						<radio value="checked" :checked="item.check" @click="checkedChange(item)" />
@@ -35,7 +36,6 @@
 									:input-height="45"
 									v-model="currentNumBox"
 									@change="numberBoxChange"
-									:press-time="150"
 									>
 								</u-number-box>
 								<view v-if="showNumberBox === index" class="closeNumBox" @click="closeNumBox(item)">x</view>
@@ -44,11 +44,11 @@
 					</view>
 				</view>
 			</scroll-view>
-			<view class="clearCar">
+			<!-- <view class="clearCar">
 				<text @click="$refs.clearCarDialog.open()">清空购物车</text>
-			</view>
+			</view> -->
 		</view>
-		<view class="result">
+		<!-- <view class="result">
 			<view class="choseAll">
 				<label>
 					<checkbox value="checked" :checked="checkedAll" @click="checkAll" />
@@ -63,8 +63,7 @@
 					<button type="default" hover-class="none" @click="pay">去结算</button>
 				</view>
 			</view>
-		</view>
-
+		</view> -->
 		<uni-popup ref="clearCarDialog" type="dialog">
 			<uni-popup-dialog type="input" :duration="350" content="确定要清空购物车吗？" @close="$refs.clearCarDialog.close()" @confirm="clearCarConfirm"></uni-popup-dialog>
 		</uni-popup>
@@ -100,45 +99,7 @@
 				showNumberBox: -1,
 				currentNumBox: 1,
 				lastIndex: -1,
-				arr: [{
-						id: 0,
-						price: 2.78,
-						check: true,
-						count: 1,
-						show: false
-					}, {
-						id: 1,
-						price: 74.2,
-						check: true,
-						count: 3,
-						show: false
-					}, {
-						id: 2,
-						price: 4.66,
-						check: false,
-						count: 1,
-						show: false
-					}, {
-						id: 3,
-						price: 24.0,
-						check: true,
-						count: 2,
-						show: false
-					}, {
-						id: 4,
-						price: 199.5,
-						check: true,
-						count: 1,
-						show: false
-					}, {
-						id: 5,
-						price: 49.9,
-						check: false,
-						count: 5,
-						show: false
-					}
-
-				],
+				arr: [],
 				options: [{
 					text: '置顶',
 					style: {
@@ -152,7 +113,21 @@
 				}]
 			}
 		},
+		created() {
+			this.createData()
+		},
 		methods: {
+			createData () {
+				this.arr = new Array(30).fill(1).map((value, index) => {
+					return {
+						id: index+ 1,
+						price: 49.9,
+						check: false,
+						count: 5,
+						show: false
+					}
+				})
+			},
 			gotoIndex () {
 				uni.switchTab({
 					url: '../index/index'
@@ -257,35 +232,39 @@
 </script>
 
 <style scoped>
+	.shopCar{
+		background-color: pink;
+	}
+	.status_bar {
+		height: var(--status-bar-height);
+		width: 100%;
+		background-color: #1677b3;
+		position: fixed;
+		z-index: 999;
+		top: 0;
+	}
 	.noLogin, .empty{
-		/* #ifdef APP-PLUS */
-		height: calc(100vh - 88rpx -  100rpx);
-		/* #endif */
-		height: 100vh;
 		display: flex;
 		justify-content: center;
 		align-items: center;
 		font-size: 42rpx;
 	}
-	.shopCar {
-		height: 100%;
-		overflow: hidden;
-		padding-bottom: 80rpx;
-	}
 
 	.goodListBox {
+		margin-top: var(--status-bar-height);
 		height: 100%;
-	}
-
-	.allGood {
-		padding: 10rpx;
-		font-size: 36rpx;
-		border-bottom: 2rpx solid #ccc;
 	}
 
 	.goodList {
-		height: 100%;
-		width: 100%;
+		background-color: blue;
+		height: calc(100% - var(--status-bar-height) - 60rpx - 80rpx);
+	}	
+		
+	.allGood {
+		height: 60rpx;
+		line-height: 60rpx;
+		font-size: 36rpx;
+		border-bottom: 2rpx solid #ccc;
 	}
 
 	.card {
@@ -293,7 +272,6 @@
 		height: 200rpx;
 		box-sizing: border-box;
 		display: flex;
-		position: relative;
 		border-bottom: 2rpx solid #ccc;
 	}
 
@@ -366,6 +344,7 @@
 		justify-content: center;
 		align-items: center;
 		background-color: #eee;
+		margin-bottom: 76rpx;
 	}
 
 	.clearCar text {
@@ -390,7 +369,7 @@
 
 	.goodCount {
 		box-sizing: border-box;
-		padding: 0 8rpx 0 4rpx;
+		padding: 0 12rpx;
 		height: 50rpx;
 		line-height: 46rpx;
 		text-align: center;
@@ -422,7 +401,7 @@
 		display: flex;
 		justify-content: space-between;
 		align-items: center;
-		padding-left: 10rpx;
+		padding-left: 30rpx;
 		background-color: #fff;
 	}
 

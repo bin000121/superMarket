@@ -34,37 +34,25 @@
 					<view class="list_item_text">收货地址</view>
 				</view>
 				<view class="list_item_right">
-					<icon type="arrowright" size="26" color= "#777"></icon>
+					<u-icon name="arrow-right" size="32" color= "#777"></u-icon>
 				</view>
 			</view>
 		</view>
-		<view class="logout" @click="$refs.logout.open()">
+<!-- 		<view class="logout" @click="$refs.logout.open()">
 			<text>退出登录</text>
 		</view>
 		<view class="version">
 			<view class="version_text"><text>用户服务协议 · 隐私权政策</text></view>
 			<view class="version_desc"><text>当前版本v2.6.3</text></view>
-		</view>
-		
-		<uni-popup ref="logout" type="dialog">
-				<uni-popup-dialog 
-					type="input" 
-					:duration="350" 
-					content="确定要退出当前账号吗？"
-					@close="$refs.logout.close()" 
-					@confirm="confirmLogout"
-				></uni-popup-dialog>
-		</uni-popup>
+		</view> -->
 	</view>
 </template>
 
 <script>
-	import icon from '../../components/uni-icons/uni-icons.vue'
 	import uniPopupDialog from '../../components/uni-popup/uni-popup-dialog.vue'
 	export default {
-		components: {
-			uniPopupDialog,
-			icon
+		components:{
+			uniPopupDialog
 		},
 		data() {
 			return {
@@ -98,7 +86,7 @@
 	}
 	.header{
 		width: 100%;
-		height: 360rpx;
+		height: 300rpx;
 		background-color: pink;
 		position: relative;
 	}
