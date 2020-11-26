@@ -1,17 +1,18 @@
 <template>
 	<view class="shopCar" v-if="token && !empty">
 		<view class="status_bar"></view>
+		<view class="allGood">
+			共 {{arr.length}} 件商品
+		</view>
 		<view class="goodListBox">
-			<view class="allGood">
-				共 {{arr.length}} 件商品
-			</view>
+
 			<scroll-view scroll-y class="goodList">
 				<view class="card" v-for="(item, index) in arr" :key="item.id">
 					<view class="card_checkBox">
 						<radio value="checked" :checked="item.check" @click="checkedChange(item)" />
 					</view>
 					<view class="card_goodImg">
-						<view style="height: 100%;background-color: #0DAB2B;">图片</view>
+						<view style="height: 100%;background-color: #1677b3;">图片</view>
 					</view>
 					<view class="card_goodDetail">
 						<view class="card_goodDetail_title">
@@ -48,7 +49,7 @@
 				<text @click="$refs.clearCarDialog.open()">清空购物车</text>
 			</view> -->
 		</view>
-		<!-- <view class="result">
+		<view class="result">
 			<view class="choseAll">
 				<label>
 					<checkbox value="checked" :checked="checkedAll" @click="checkAll" />
@@ -63,7 +64,7 @@
 					<button type="default" hover-class="none" @click="pay">去结算</button>
 				</view>
 			</view>
-		</view> -->
+		</view>
 		<uni-popup ref="clearCarDialog" type="dialog">
 			<uni-popup-dialog type="input" :duration="350" content="确定要清空购物车吗？" @close="$refs.clearCarDialog.close()" @confirm="clearCarConfirm"></uni-popup-dialog>
 		</uni-popup>
@@ -233,15 +234,25 @@
 
 <style scoped>
 	.shopCar{
-		background-color: pink;
+		height: 100%;
+		display: flex;
+		flex-direction: column;
 	}
-	.status_bar {
-		height: var(--status-bar-height);
-		width: 100%;
-		background-color: #1677b3;
-		position: fixed;
-		z-index: 999;
-		top: 0;
+	.goodListBox {
+		flex: 1;
+		overflow: hidden;
+	}
+
+	.goodList {
+		height: calc(100% - 80rpx);
+	}	
+		
+	.allGood {
+		height: 80rpx;
+		line-height: 80rpx;
+		font-size: 36rpx;
+		padding-left: 30rpx;
+		border-bottom: 2rpx solid #ccc;
 	}
 	.noLogin, .empty{
 		display: flex;
@@ -249,24 +260,6 @@
 		align-items: center;
 		font-size: 42rpx;
 	}
-
-	.goodListBox {
-		margin-top: var(--status-bar-height);
-		height: 100%;
-	}
-
-	.goodList {
-		background-color: blue;
-		height: calc(100% - var(--status-bar-height) - 60rpx - 80rpx);
-	}	
-		
-	.allGood {
-		height: 60rpx;
-		line-height: 60rpx;
-		font-size: 36rpx;
-		border-bottom: 2rpx solid #ccc;
-	}
-
 	.card {
 		width: 100%;
 		height: 200rpx;
@@ -373,8 +366,8 @@
 		height: 50rpx;
 		line-height: 46rpx;
 		text-align: center;
-		color: #0DAB2B;
-		border: 2rpx solid #0DAB2B;
+		color: #1677b3;
+		border: 2rpx solid #1677b3;
 		border-radius: 15rpx;
 		font-size: 32rpx;
 		margin-left: calc(100% - 60rpx - 10rpx);

@@ -104,6 +104,37 @@ $uni-font-size-paragraph:30upx;
 .w100v{
 	width: 100vw;
 }
+.status_bar{
+	height: var(--status-bar-height);
+	width: 100%;
+	background-color: #1677b3;
+}
+
+$display: ('b': 'block', 'n': 'none', 'f': 'flex', 'ib': 'inline-block', 'g': 'grid');
+$justifyContent: ('fs': 'flex-start', 'c': 'center', 'fe': 'flex-end', 'sb': 'space-between', 'sa': 'space-around');
+$alignItems: ('s': 'start', 'c': 'center', 'e': 'end');
+
+@each $key, $value in $display {
+	.d#{$key}{
+		display: #{$value};
+	}
+}
+
+@each $key, $value in $justifyContent {
+	.jc-#{$key}{
+		justify-content: #{$value};
+	}
+}
+
+@each $key, $value in $alignItems {
+	.al-#{$key}{
+		align-items: #{$value};
+	}
+	.as-#{$key}{
+		align-self: #{$value};
+	}
+}
+
 
 $direction: ('t': 'top', 'r': 'right', 'b': 'bottom', 'l': 'left');
 $size: ('1': '5', '2': '15', '3': '30', '4': '45');

@@ -1,5 +1,5 @@
-import CLASSIFYAPI from './http/classifyApi.js'
+import ClassApi from './http/classifyApi.js'
 
 export default {
-	CLASSIFYAPI
+	ClassApi
 }

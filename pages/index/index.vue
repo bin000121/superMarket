@@ -6,10 +6,10 @@
 				<text>￥1581.7</text>
 			</view>
 		</view>
-
+		
+		<view class="status_bar" />
 		<view class="top">
-			<view class="location">
-			</view>
+			<view class="location" />
 		</view>
 		<view class="topSearch">
 			<view class="searchBox" @click="gotoSearch">
@@ -22,7 +22,7 @@
 			</view>
 		</view>
 
-		<view style="margin: 90rpx 0 15rpx;">
+		<view class="swiper">
 			<u-swiper :duration="300" :list="swiperList" mode="round" interval="3000" border-radius="5" height="300" />
 		</view>
 
@@ -228,12 +228,24 @@
 </script>
 
 <style lang="scss">
+	.content{
+		height: 100%;
+		position: relative;
+	}
+	.status_bar{
+		height: var(--status-bar-height);
+		width: 100%;
+		background-color: #1677b3;
+		position: fixed;
+		z-index: 999;
+		top:0;
+	}
 	.topSearch {
 		background-color: $baseColor;
-		height: 80rpx;
+		height: 90rpx;
 		width: 100%;
 		position: fixed;
-		top: 0;
+		top: var(--status-bar-height);
 		left: 0;
 		z-index: 999;
 		display: flex;
@@ -244,7 +256,7 @@
 	.searchBox {
 		width: 85%;
 		margin: 0 auto;
-		height: 60rpx;
+		height: 70rpx;
 		background-color: #fff;
 		border-radius: 15rpx;
 		display: flex;
@@ -267,7 +279,9 @@
 		border-bottom-right-radius: 30rpx;
 		line-height: 60rpx;
 	}
-
+	.swiper{
+		margin: calc(var(--status-bar-height) + 90rpx + 6rpx) 0 6rpx;
+	}
 	.goodImg {
 		width: 100%;
 		height: 160rpx;

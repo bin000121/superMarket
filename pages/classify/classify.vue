@@ -51,6 +51,7 @@
 			return {
 				classify: '',
 				right_title: '',
+				lastIndex: -1,
 				currentIndex: 0,
 				goodsList: [],
 				leftScrollTop: 0,
@@ -67,8 +68,9 @@
 		},
 		methods: {
 			toggle(index) {
+				this.lastIndex = this.currentIndex
 				this.currentIndex = index
-				this.right_title = 'right_title_' + index
+				this.$nextTick(() => this.right_title = 'right_title_' + index)
 			},
 			createList () {
 				// let classifyList = uni.getStorageSync('iconList') 
@@ -162,6 +164,9 @@
 		background-color: #fff;
 	}
 	
+	.noSticky{
+		position: static!important;
+	}
 	
 	.sticky{
 		position: sticky;

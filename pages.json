@@ -3,7 +3,10 @@
 		{
 			"path": "pages/index/index",
 			"style": {
-				"navigationBarTitleText": "阿荣乐购"
+				"navigationBarTitleText": "阿荣乐购",
+				"app-plus": {
+					"titleNView": false
+				}
 				
 			}
 		},
@@ -11,7 +14,9 @@
 			"path": "pages/mine/mine",
 			"style": {
 				"navigationBarTitleText": "我的",
-				"backgroundColor":"#1677b3"
+				"app-plus": {
+					"titleNView": false
+				}
 			}
 		},
 		{

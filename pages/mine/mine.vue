@@ -1,5 +1,6 @@
 <template>
 	<view class="mine">
+		<view class="status_bar"/>
 		<view class="header">
 			<view class="avatarBox">
 				<view class="avatarBox_avatar"></view>

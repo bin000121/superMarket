@@ -4,9 +4,9 @@
 			<view class="input">
 				<u-search 
 				style="width: 100%;"
-				height="65"
+				height="75"
 				shape="square"
-				:focus="true"
+				:focus="focus"
 				placeholder="这家店应有尽有~~"
 				:show-action="false"
 				v-model="iptValue"
@@ -16,7 +16,10 @@
 		</view>
 		
 		<view class="historySearch">
-			<view>历史搜索</view>
+			<view class="df jc-sb al-c">
+				<view>历史搜索</view>
+				<view @click="deleteHistorySearch"><u-icon name="trash" size="36" /></view>
+			</view>
 			<view class="historyKeyList">
 				<view v-for="item in historyKeyList" :key="item" class="historyKey" @click="copyKeyWord(item)">{{item}}</view>
 			</view>
@@ -27,6 +30,20 @@
 				<view v-for="item in hotKeyList" :key="item" class="hotKey" @click="copyKeyWord(item)">{{item}}</view>
 			</view>
 		</view>
+		
+		
+		<u-modal
+			v-model="isDeleteHistorySearch"
+			:show-title="false"
+			show-cancel-button
+			cancel-color="#e80000"
+			content="清空全部全部的历史记录？" 
+			@confirm="confirmDel"
+			@cancel="cancelDel"
+			width="70%"
+			:zoom="false"
+			:negative-top="150"
+			/>
 	</view>
 </template>
 
@@ -35,6 +52,8 @@
 		data() {
 			return {
 				iptValue: '',
+				focus: true,
+				isDeleteHistorySearch: false,
 				historyKeyList: [
 					'乐事薯片',
 					'德芙'
@@ -72,6 +91,26 @@
 			},
 			searchGood (e) {
 				console.log(e)
+			},
+			deleteHistorySearch () {
+				if (!this.historyKeyList.length) {
+					uni.showToast({
+						icon:'none',
+						mask: true,
+						title: '历史搜索已清空！',
+						position: 'center'
+					})
+					return false
+				}
+				this.focus = false
+				this.isDeleteHistorySearch = true
+			},
+			confirmDel () {
+				this.focus = true
+				this.historyKeyList = []
+			},
+			cancelDel () {
+				this.focus = true
 			}
 		}
 	}
@@ -81,7 +120,7 @@
 	.searchBody{
 		width: 100%;
 		height: 100vh;
-		padding: 15rpx;
+		padding: 30rpx;
 	}
 .top{
 	width: 100%;
